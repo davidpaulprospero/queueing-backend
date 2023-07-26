@@ -8,7 +8,7 @@ use App\Models\TransactionType;
 class Token extends Model
 {
     protected $table = "token";
-    protected $fillable = ['counter_id'];
+    protected $fillable = ['counter_id', 'user_id'];
     public $timestamps = false;
     
     public function department() 

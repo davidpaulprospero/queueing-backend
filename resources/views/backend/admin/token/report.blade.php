@@ -39,8 +39,7 @@
                     <th> 
                         {{ Form::select('officer', $officers, null, ['id'=>'officer', 'class'=>'select2 filter', 'placeholder'=> trans('app.officer')]) }} 
                     </th>  
-                    <th></th>
-                    <th></th>
+                    <th> {{ Form::select('transaction_type', $transactionTypes, null, ['id'=>'transaction_type', 'class'=>'select2 filter', 'placeholder'=> trans('app.transaction_type')]) }} </th>
                     <th> 
                         {{ Form::select('status', ["'0'"=>trans("app.pending"), '1'=>trans("app.complete"), '2'=>trans("app.stop")],  null,  ['placeholder' => trans("app.status"), 'id'=> 'status', 'class'=>'select2 filter']) }} 
                     </th>  
@@ -137,6 +136,7 @@
                         officer    : $('#officer').val(),
                         start_date : $('#start_date').val(),
                         end_date   : $('#end_date').val(),
+                        transaction_type: $('#transaction_type').val(),
                     }
                 }
             },
@@ -150,17 +150,11 @@
                 // { data: 'client_mobile' }, 
                 // { data: 'note' }, 
                 { data: 'status' }, 
-                { 
-                    data: 'created_by',
-                    className: 'exclude-print' // Exclude this column from the printing prompt
-                },
+                { data: 'created_by' },
                 { data: 'created_at' },
                 { data: 'updated_at' }, 
                 { data: 'complete_time' },
-                { 
-                    data: 'options',
-                    className: 'exclude-print' // Exclude this column from the printing prompt
-                }
+                { data: 'options' }  
             ],  
             order: [ [0, 'desc'] ], 
             select    : true,
@@ -171,9 +165,9 @@
                 { "orderable": false, "targets": [11] }
             ], 
             buttons: [
-                { extend:'copy', text:'<i class="fa fa-copy"></i>', className:'btn-sm',exportOptions:{columns:':visible:not(.exclude-print)'}},
-                { extend: 'print', text  :'<i class="fa fa-print"></i>', className:'btn-sm', exportOptions: { columns: ':visible:not(.exclude-print)',  modifier: { selected: null } }},  
-                { extend: 'print', text:'<i class="fa fa-print"></i>  Selected', className:'btn-sm', exportOptions:{columns: ':visible:not(.exclude-print)'}},  
+                { extend:'copy', text:'<i class="fa fa-copy"></i>', className:'btn-sm',exportOptions:{columns:':visible'}},
+                { extend: 'print', text  :'<i class="fa fa-print"></i>', className:'btn-sm', exportOptions: { columns: ':visible',  modifier: { selected: null } }},  
+                { extend: 'print', text:'<i class="fa fa-print"></i>  Selected', className:'btn-sm', exportOptions:{columns: ':visible'}},  
                 { extend:'excel',  text:'<i class="fa fa-file-excel-o"></i>', className:'btn-sm',exportOptions:{columns:':visible'}},
                 { extend:'pdf',  text:'<i class="fa fa-file-pdf-o"></i>',  className:'btn-sm',exportOptions:{columns:':visible'}},
                 { extend:'colvis', text:'<i class="fa fa-eye"></i>',className:'btn-sm'} 

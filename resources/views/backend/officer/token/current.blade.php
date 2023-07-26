@@ -57,13 +57,12 @@
                             </td>
                             <td>
                                 <div class="btn-group"> 
-                                <button class="btn btn-primary take-button" data-token-id="{{ $token['id'] }}">Take</button>
+                                    <button class="btn btn-primary take-button" data-token-id="{{ $token['id'] }}">Take</button>
+                                    <button class="btn btn-primary call-button" data-token-id="{{ $token['token_no'] }}">Call</button>
                                     <a href="{{ url("officer/token/complete/$token->id") }}"  class="btn btn-success btn-sm" onclick="return confirm('Are you sure?')" title="Complete"><i class="fa fa-check"></i></a>
                                     @if($token->status==0)
                                     <a href="{{ url("officer/token/stoped/$token->id") }}"  class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to stop this token?')" title="Stop"><i class="fa fa-stop"></i></a>
                                     @endif
-
-                                    <button type="button" href='{{ url("officer/token/print") }}' data-token-id='{{ $token->id }}' class="tokenPrint btn btn-default btn-sm" title="Print" ><i class="fa fa-print"></i></button>
                                 </div>
                             </td>
                             
@@ -91,12 +90,13 @@
 
     function loadHandler() {
         setTimeout(doMyStuff, 2000);
-        addEventListenersForTakeButtons();
+        // addEventListenersForTakeButtons();
     }
 
     function addEventListenersForTakeButtons() {
         const takeButtons = document.querySelectorAll('.take-button');
-        console.log(takeButtons)
+        const callButtons = document.querySelectorAll('.call-button');
+        // console.log(takeButtons)
         // Add a click event listener to each "Take" button
         const baseApiUrl = '{{ URL::to("/") }}';
         takeButtons.forEach(button => {
@@ -112,6 +112,38 @@
                     },
                     body: JSON.stringify({
                         user_id: '{{ Auth::user()->id }}' // Replace this with the user ID as needed
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the response data here (e.g., show a success message)
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Handle errors (e.g., show an error message)
+                    console.error(error);
+                });
+            });
+        });
+
+        callButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get the token ID from the data attribute of the button
+                const tokenId = button.getAttribute('data-ticket-id');
+                // Send an AJAX POST request to the API route
+                fetch(`${baseApiUrl}/api/ticket/call`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        ticket: tokenId
                     })
                 })
                 .then(response => {
@@ -187,12 +219,11 @@
                     var row = this;
                     var rowData = row.data();
                     var tokenId = rowData[8]; // Get the token ID from the 8th column
+                    var token = rowData[1]; // Get the token from the 2nd column
 
                     var buttonsHtml = '<div class="btn-group"> ' +
-                        '<button class="btn btn-primary take-button" data-ticket-id="' + tokenId + '">Take</button>' +
-                        '<a href="{{ url("officer/token/complete/") }}/' + tokenId + '" class="btn btn-success btn-sm" onclick="return confirm(\'Are you sure?\')" title="Complete"><i class="fa fa-check"></i></a>' +
-                        '<button type="button" href="{{ url("officer/token/print") }}" data-token-id="' + tokenId + '" class="tokenPrint btn btn-default btn-sm" title="Print"><i class="fa fa-print"></i></button>' +
-                        '</div>';
+                        '<button class="btn btn-primary take-button" data-ticket-id="' + tokenId + '">Take</button>' + '<button class="btn btn-primary call-button" data-ticket-id="' + token + '">Call</button>' +
+                        '<a href="{{ url("officer/token/complete/") }}/' + tokenId + '" class="btn btn-success btn-sm" onclick="return confirm(\'Are you sure?\')" title="Complete"><i class="fa fa-check"></i></a>';
 
                          // Add the Stop button to the button HTML if the token status is pending (0)
                     if (rowData[6] === '<span class="label label-primary">Pending</span>') {

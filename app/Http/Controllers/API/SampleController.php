@@ -13,6 +13,8 @@ use App\Models\Counter;
 use App\Models\Department;
 use App\Http\Controllers\Common\Token_lib;
 
+use App\Events\CallTokenEvent;
+
 class SampleController extends Controller
 {
     /**
@@ -47,7 +49,7 @@ class SampleController extends Controller
             // Check if the token exists and belongs to the user's department
             if ($token && $token->department_id == $tokenSetting->department_id) {
                 // Update the counter_id directly on the model and save it
-                $token->update(['counter_id' => $counterId]);
+                $token->update(['counter_id' => $counterId, 'user_id' => $userId]);
     
                 // Optionally, you can return a response indicating a successful update
                 return response()->json(['message' => 'Token updated successfully'], 200);
@@ -103,6 +105,14 @@ class SampleController extends Controller
      
          return response()->json($data);
      }
+
+     public function playTicket(Request $request)
+    {
+        // Broadcast the event to notify the frontend
+        event(new CallTokenEvent($request->input('ticket')));
+
+        return response()->json(['message' => 'Ticket play event broadcasted successfully']);
+    }
      
     public function index()
     {

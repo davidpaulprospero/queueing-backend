@@ -9,6 +9,7 @@ use App\Models\Token;
 use App\Models\Department;
 use App\Models\Counter;
 use App\Models\User;
+use App\Models\TransactionType;
 use App\Models\SmsSetting;
 use App\Models\SmsHistory;
 use App\Models\TokenSetting;
@@ -26,9 +27,10 @@ class TokenController extends Controller
             ->where('user_type',1)
             ->where('status',1)
             ->orderBy('firstname', 'ASC')
-            ->pluck('name', 'id');  
+            ->pluck('name', 'id');
+        $transaction_types = TransactionType::pluck('name', 'id');
 
-        return view('backend.officer.token.list', compact('counters', 'departments', 'officers'));
+        return view('backend.officer.token.list', compact('transaction_types', 'counters', 'departments', 'officers'));
     }  
 
     public function tokenData(Request $request)
@@ -38,14 +40,14 @@ class TokenController extends Controller
             1 => 'token_no',
             2 => 'department',
             3 => 'counter',
-            4 => 'client_mobile',
-            5 => 'note',
-            6 => 'status',
-            7 => 'created_by',
-            8 => 'created_at',
-            9 => 'updated_at',
-            10 => 'updated_at',
-            11 => 'id',
+            // 4 => 'client_mobile',
+            4 => 'transaction_type',
+            // 5 => 'note',
+            5 => 'status',
+            // 7 => 'created_by',
+            6 => 'created_at',
+            7 => 'updated_at',
+            8 => 'options',
         ]; 
 
         $totalData = Token::count();
@@ -77,13 +79,20 @@ class TokenController extends Controller
                 }
                 if (!empty($search['department'])) {
                     $query->where('department_id', '=', $search['department']);
-                } 
+                }
 
                 if (!empty($search['start_date']) && !empty($search['end_date'])) {
                     $query->whereBetween("created_at",[
                         date('Y-m-d', strtotime($search['start_date']))." 00:00:00", 
                         date('Y-m-d', strtotime($search['end_date']))." 23:59:59"
                     ]);
+                }
+
+                if (!empty($search['transaction_types'])) {
+                    $transactionTypeId = TransactionType::where('name', 'LIKE', "%{$search['value']}%")->pluck('id')->toArray();
+                    if (!empty($transactionTypeId)) {
+                        $query->orWhereIn('transaction_type_id', $transactionTypeId);
+                    }
                 }
 
                 if (!empty($search['value'])) {
@@ -95,17 +104,17 @@ class TokenController extends Controller
                     {
                         $date = date('Y-m-d', strtotime($search['value']));
                         $query->where('token_no', 'LIKE',"%{$search['value']}%")
-                            ->orWhere('client_mobile', 'LIKE',"%{$search['value']}%")
-                            ->orWhere('note', 'LIKE',"%{$search['value']}%")
+                            // ->orWhere('client_mobile', 'LIKE',"%{$search['value']}%")
+                            // ->orWhere('note', 'LIKE',"%{$search['value']}%")
                             ->orWhere(function($query)  use($date) {
                                 $query->whereDate('created_at', 'LIKE',"%{$date}%");
                             })
                             ->orWhere(function($query)  use($date) {
                                 $query->whereDate('updated_at', 'LIKE',"%{$date}%");
-                            })
-                            ->orWhereHas('generated_by', function($query) use($search) {
-                                $query->where(DB::raw('CONCAT(firstname, " ", lastname)'), 'LIKE',"%{$search['value']}%");
-                            }); 
+                            });
+                            // ->orWhereHas('generated_by', function($query) use($search) {
+                            //     $query->where(DB::raw('CONCAT(firstname, " ", lastname)'), 'LIKE',"%{$search['value']}%");
+                            // }); 
                     }
                 }
             });
@@ -150,8 +159,8 @@ class TokenController extends Controller
                     'token_no'   => (!empty($token->is_vip)?("<span class=\"label label-danger\" title=\"VIP\">$token->token_no</span>"):$token->token_no),
                     'department' => (!empty($token->department)?$token->department->name:null),
                     'counter'    => (!empty($token->counter)?$token->counter->name:null), 
-                    'client_mobile'    => $token->client_mobile. "<br/>" .(!empty($token->client)?("(<a href='".url("officer/user/view/{$token->client->id}")."'>".$token->client->firstname." ". $token->client->lastname."</a>)"):null),
-
+                    // 'client_mobile'    => $token->client_mobile. "<br/>" .(!empty($token->client)?("(<a href='".url("officer/user/view/{$token->client->id}")."'>".$token->client->firstname." ". $token->client->lastname."</a>)"):null),
+                    'transaction_type' => (!empty($token->transactionType) ? $token->transactionType->name : null),
                     'note'       => $token->note,
                     'status'     => (($token->status==1)?("<span class='label label-success'>".trans('app.complete')."</span>"):(($token->status==2)?"<span class='label label-danger'>".trans('app.stop')."</span>":"<span class='label label-primary'>".trans('app.pending')."</span>")).(!empty($token->is_vip)?('<span class="label label-danger" title="VIP">VIP</span>'):''),
                     'created_by'    => (!empty($token->generated_by)?("<a href='".url("officer/user/view/{$token->generated_by->id}")."'>".$token->generated_by->firstname." ". $token->generated_by->lastname."</a>"):null),
@@ -209,7 +218,7 @@ class TokenController extends Controller
     public function getCurrentTicket()
 {
     // Logic to fetch the current ticket, assign it to the $ticket variable
-    $ticket = Token::where('status', 0)->first();
+    $tokens = Token::whereIn('status', [0, 2])->get();
 
     return view('backend.officer.token.current', compact('tokens'));
 }
@@ -235,7 +244,7 @@ class TokenController extends Controller
         $token = DB::table('token AS t')
             ->select(
                 "t.token_no AS token",
-                "t.client_mobile AS mobile",
+                // "t.client_mobile AS mobile",
                 "d.name AS department",
                 "c.name AS counter",
                 DB::raw("CONCAT_WS(' ', u.firstname, u.lastname) AS officer"),
@@ -247,35 +256,35 @@ class TokenController extends Controller
             ->where('t.id', $id)
             ->first();
             
-        if (!empty($token->mobile))
-        {
-            $response = (new SMS_lib)
-                ->provider("$setting->provider")
-                ->api_key("$setting->api_key")
-                ->username("$setting->username")
-                ->password("$setting->password")
-                ->from("$setting->from")
-                ->to($token->mobile)
-                ->message($setting->recall_sms_template, array(
-                    'TOKEN'  =>$token->token,
-                    'MOBILE' =>$token->mobile,
-                    'DEPARTMENT'=>$token->department,
-                    'COUNTER'=>$token->counter,
-                    'OFFICER'=>$token->officer,
-                    'DATE'   =>$token->date
-                ))
-                ->response();
-            $api = json_decode($response, true); 
+        // if (!empty($token->mobile))
+        // {
+        //     $response = (new SMS_lib)
+        //         ->provider("$setting->provider")
+        //         ->api_key("$setting->api_key")
+        //         ->username("$setting->username")
+        //         ->password("$setting->password")
+        //         ->from("$setting->from")
+        //         ->to($token->mobile)
+        //         ->message($setting->recall_sms_template, array(
+        //             'TOKEN'  =>$token->token,
+        //             'MOBILE' =>$token->mobile,
+        //             'DEPARTMENT'=>$token->department,
+        //             'COUNTER'=>$token->counter,
+        //             'OFFICER'=>$token->officer,
+        //             'DATE'   =>$token->date
+        //         ))
+        //         ->response();
+        //     $api = json_decode($response, true); 
 
-            //store sms information 
-            $sms = new SmsHistory; 
-            $sms->from        = $setting->from;
-            $sms->to          = $token->mobile;
-            $sms->message     = $api['message'];
-            $sms->response    = $response;
-            $sms->created_at  = date('Y-m-d H:i:s');
-            $sms->save();
-        } 
+        //     //store sms information 
+        //     $sms = new SmsHistory; 
+        //     $sms->from        = $setting->from;
+        //     $sms->to          = $token->mobile;
+        //     $sms->message     = $api['message'];
+        //     $sms->response    = $response;
+        //     $sms->created_at  = date('Y-m-d H:i:s');
+        //     $sms->save();
+        // } 
 
         Token::where('id', $id)
             ->where('user_id', auth()->user()->id )
@@ -292,7 +301,6 @@ class TokenController extends Controller
     public function stoped($id = null)
     {
         Token::where('id', $id)
-            ->where('user_id', auth()->user()->id )
             ->update([
                 'updated_at' => date('Y-m-d H:i:s'), 
                 'status'     => 2,

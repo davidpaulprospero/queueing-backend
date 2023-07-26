@@ -51,7 +51,7 @@
                     <th>{{ trans('app.token_no') }}</th> 
                     <th>{{ trans('app.department') }}</th>
                     <th>{{ trans('app.counter') }}</th>
-                    <th>{{ trans('app.client_mobile') }}</th>
+                    <th>{{ trans('app.transaction_type') }}</th>
                     <th>{{ trans('app.note') }}</th> 
                     <th>{{ trans('app.status') }}</th>
                     <th>{{ trans('app.created_by') }}</th>
@@ -103,13 +103,10 @@
                 { data: 'token_no' },
                 { data: 'department' },
                 { data: 'counter' },
-                { data: 'client_mobile' }, 
+                { data: 'transaction_type' }, 
                 { data: 'note' }, 
-                { data: 'status' },  
-                { 
-                    data: 'created_by',
-                    className: 'exclude-print'
-                },
+                { data: 'status' }, 
+                { data: 'created_by' },
                 { data: 'created_at' },
                 { data: 'updated_at' }, 
                 { data: 'complete_time' },
@@ -131,13 +128,7 @@
                 { extend:'pdf',  text:'<i class="fa fa-file-pdf-o"></i>',  className:'btn-sm',exportOptions:{columns:':visible'}},
                 { extend:'colvis', text:'<i class="fa fa-eye"></i>',className:'btn-sm'} 
             ] 
-        });
-        console.log($('#status').val());
-        console.log($('#counter').val());
-        console.log($('#department').val());
-        console.log($('#start_date').val());
-        console.log($('#end_date').val());
-   
+        });   
     } 
 
 

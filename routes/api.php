@@ -9,7 +9,6 @@ use API\ServicesController;
 use API\StudentNumberController;
 use API\VideosController;
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,6 +29,7 @@ Route::apiResource('sample', SampleController::class);
 Route::apiResource('ticket', TicketController::class);
 Route::apiResource('departments', DepartmentController::class);
 Route::apiResource('videos', VideosController::class);
+Route::post('/ticket/call', 'API\SampleController@playTicket');
 // Route::resource('departments.services', 'Api\ServicesController')->only('index');
 // Route::post('/tickets', [TicketController::class, 'store']);
 Route::apiResource('studentnumber', StudentNumberController::class)->only([

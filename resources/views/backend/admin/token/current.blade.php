@@ -87,12 +87,12 @@
         <input type="hidden" name="id">
         <p>
             <label for="department_id" class="control-label">{{ trans('app.department') }} </label><br/>
-            {{ Form::select('department_id', $counters, null, ['placeholder' => 'Select Option', 'class'=>'select2', 'id'=>'department_id']) }}<br/>
+            {{ Form::select('department_id', $departments, null, ['placeholder' => 'Select Option', 'class'=>'select2', 'id'=>'department_id']) }}<br/>
         </p>
 
         <p>
             <label for="counter_id" class="control-label">{{ trans('app.counter') }} </label><br/>
-            {{ Form::select('counter_id', $departments, null, ['placeholder' => 'Select Option', 'class'=>'select2', 'id'=>'counter_id']) }}
+            {{ Form::select('counter_id', $counters, null, ['placeholder' => 'Select Option', 'class'=>'select2', 'id'=>'counter_id']) }}
         </p> 
 
         <p>
@@ -137,6 +137,7 @@
 
                 // Clear the existing data in the table
                 dataTable.clear();
+                
 
                 // Convert the token data into the required format
                 var sl = 1;
@@ -185,6 +186,10 @@
 
                     // Replace the empty cell in the 7th column with the button HTML
                     $(row.node()).find('td:eq(8)').html(buttonsHtml);
+                });
+
+                dataTable.on('init.dt', function () {
+                    $('select[name="myDataTable_length"]').removeClass('custom-select').css('width', 'auto');
                 });
             }
         });
