@@ -38,17 +38,19 @@ class TokenController extends Controller
         $columns = [
             0 => 'id',
             1 => 'token_no',
-            2 => 'department',
-            3 => 'counter',
-            4 => 'client_mobile',
-            // 4 => 'transaction_type',
-            5 => 'note',
-            6 => 'status',
-            7 => 'created_by',
-            8 => 'created_at',
-            9 => 'updated_at',
-            10 => 'options',
-        ]; 
+            2 => 'department_id',
+            3 => 'counter_id',
+            4 => 'user_id',
+            5 => 'transaction_type_id',
+            // 6 => 'client_mobile',
+            6 => 'note',
+            7 => 'status',
+            8 => 'created_by',
+            9 => 'created_at',
+            10 => 'updated_at',
+            11 => 'options',
+        ];
+        
 
         $totalData = Token::count();
         $totalFiltered = $totalData; 

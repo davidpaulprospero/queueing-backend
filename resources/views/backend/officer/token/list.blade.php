@@ -51,7 +51,7 @@
                     <th>{{ trans('app.token_no') }}</th> 
                     <th>{{ trans('app.department') }}</th>
                     <th>{{ trans('app.counter') }}</th>
-                    <th>{{ trans('app.transaction_type') }}</th>
+                    <th>{{ trans('app.client_mobile') }}</th>
                     <th>{{ trans('app.note') }}</th> 
                     <th>{{ trans('app.status') }}</th>
                     <th>{{ trans('app.created_by') }}</th>
@@ -103,7 +103,7 @@
                 { data: 'token_no' },
                 { data: 'department' },
                 { data: 'counter' },
-                { data: 'transaction_type' }, 
+                { data: 'client_mobile' }, 
                 { data: 'note' }, 
                 { data: 'status' }, 
                 { data: 'created_by' },
