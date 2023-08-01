@@ -131,6 +131,25 @@ class SampleController extends Controller
 
         return response()->json(['message' => 'Ticket play event broadcasted successfully']);
     }
+
+    public function checkIfCounterCanTake(Request $request) {
+        // check if current user has tokens with status 0 today and they are assigned to that specific token 
+        // Get the current user ID
+        $userId = $request->input('user_id');
+
+        // Check if the current user has tokens with status 0 today
+        $hasTokensToday = Token::where('user_id', $userId)
+            ->where('status', 0)
+            ->whereDate('created_at', now()->format('Y-m-d'))
+            ->exists();
+
+        if (!$hasTokensToday) {
+            // If the user does not have tokens with status 0 today, return false
+            return response()->json(['can_take' => true]);
+        }
+        
+        return response()->json(['can_take' => false]);
+    }
      
     public function index()
     {

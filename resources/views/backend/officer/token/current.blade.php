@@ -77,6 +77,7 @@
 
 @push("scripts")
 <script type="text/javascript">
+let canCounterTake = true;
 (function() {
     if (window.addEventListener) {
         window.addEventListener("load", loadHandler, false);
@@ -93,20 +94,44 @@
     
     }
 
-function enableDisableTakeButtons(currentTicketNumber) {
-    const takeButtons = document.querySelectorAll('.take-button');
-
-    takeButtons.forEach(button => {
-        const ticketNumber = button.getAttribute('data-ticket-number');
-
-        // Disable the "Take" button if the officer already has the current ticket
-        if (ticketNumber === currentTicketNumber) {
-            button.setAttribute('disabled', 'disabled');
-        } else {
-            // Enable the "Take" button for other tickets
-            button.removeAttribute('disabled');
+function enableDisableTakeButtons() {
+    const baseApiUrl = '{{ URL::to("/") }}';
+    fetch(`${baseApiUrl}/api/check-counter-can-take`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            user_id: '{{ Auth::user()->id }}' // Replace this with the user ID as needed
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        // Handle the response data here (e.g., show a success message)
+        canCounterTake = data.can_take;
+        const takeButtons = document.querySelectorAll('.take-button');
+    
+        takeButtons.forEach(button => {
+            // Disable the "Take" button if the officer already has the current ticket
+            if (!data.can_take) {
+                button.setAttribute('disabled', 'disabled');
+            } else {
+                // Enable the "Take" button for other tickets
+                button.removeAttribute('disabled');
+            }
+        });
+    })
+    .catch(error => {
+        // Handle errors (e.g., show an error message)
+        console.error(error);
     });
+
 }
 
     function addEventListenersForTakeButtons() {
@@ -188,10 +213,10 @@ function enableDisableTakeButtons(currentTicketNumber) {
             data: {},
             success: function(response) {
                 var dataTable = $('#myDataTable').DataTable();
-
+                
                 // Clear the existing data in the table
                 dataTable.clear();
-
+                
                 // Convert the token data into the required format
                 var sl = 1;
                 var tokenData = response.tokens.map(function(token, index) {
@@ -209,10 +234,10 @@ function enableDisableTakeButtons(currentTicketNumber) {
                     var minute = createdAt.getMinutes().toString().padStart(2, '0');
                     var amPm = hour < 12 ? 'am' : 'pm';
                     hour = (hour % 12 || 12).toString().padStart(2, '0');
-
+                    
                     var createdAtFormatted = day + ' ' + month + ' ' + year + ' ' + hour + ':' + minute + ' ' + amPm;
                     // Format the created_at date
-
+                    
                     return [
                         currentSl,
                         token.token_no,
@@ -229,7 +254,7 @@ function enableDisableTakeButtons(currentTicketNumber) {
 
                 // Add the new data to the table
                 dataTable.rows.add(tokenData).draw();
-
+                
                 // Restore the button handlers for the 7th column
                 dataTable.rows().every(function() {
                     var row = this;
@@ -237,26 +262,25 @@ function enableDisableTakeButtons(currentTicketNumber) {
                     var tokenId = rowData[8]; // Get the token ID from the 8th column
                     var token = rowData[1]; 
                     var currentTicketNumber = rowData[1];
-
                     var buttonsHtml = '<div class="btn-group"> ' +
-                        '<button class="btn btn-primary take-button" data-ticket-id="' + tokenId + '">Take</button>' + '<button class="btn btn-primary call-button" data-ticket-id="' + token + '">Call</button>' +
+                        `<button class="btn btn-primary take-button" ${!canCounterTake ? 'disabled="disabled"' : ''} data-ticket-id="` + tokenId + '">Take</button>' + '<button class="btn btn-primary call-button" data-ticket-id="' + token + '">Call</button>' +
                         '<a href="{{ url("officer/token/complete/") }}/' + tokenId + '" class="btn btn-success btn-sm" onclick="return confirm(\'Are you sure?\')" title="Complete"><i class="fa fa-check"></i></a>';
-
-                         // Add the Stop button to the button HTML if the token status is pending (0)
-                    if (rowData[6] === '<span class="label label-primary">Pending</span>') {
-                        buttonsHtml += '<a href="{{ url("officer/token/stoped/") }}/' + tokenId + '" class="btn btn-warning btn-sm" onclick="return confirm(\'Are you sure you want to stop this token?\')" title="Stop"><i class="fa fa-stop"></i></a>';
-                    }
-
-                    buttonsHtml += '</div>';
-
-                    // Replace the empty cell in the 7th column with the button HTML
-                    $(row.node()).find('td:eq(8)').html(buttonsHtml);
-                   
-                   
-                });
-                addEventListenersForTakeButtons();
-                enableDisableTakeButtons(currentTicketNumber);
-               
+                        
+                        // Add the Stop button to the button HTML if the token status is pending (0)
+                        if (rowData[6] === '<span class="label label-primary">Pending</span>') {
+                            buttonsHtml += '<a href="{{ url("officer/token/stoped/") }}/' + tokenId + '" class="btn btn-warning btn-sm" onclick="return confirm(\'Are you sure you want to stop this token?\')" title="Stop"><i class="fa fa-stop"></i></a>';
+                        }
+                        
+                        buttonsHtml += '</div>';
+                        
+                        // Replace the empty cell in the 7th column with the button HTML
+                        $(row.node()).find('td:eq(8)').html(buttonsHtml);
+                        
+                        
+                    });
+                    addEventListenersForTakeButtons();
+                    enableDisableTakeButtons();
+                    
             }
         });
         loadHandler(); 
