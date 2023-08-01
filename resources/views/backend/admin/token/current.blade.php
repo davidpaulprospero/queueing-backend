@@ -292,7 +292,46 @@
         });  
     });
     
+    function applyRowColors() {
+        var previousTicket = null;
+        var rows = $('#myDataTable tbody tr');
+        var rowColorClass = 'odd'; // Set the initial color class to 'odd'
+
+        rows.each(function(index) {
+            var currentTicket = $(this).find('td:eq(1)').text(); // Assuming ticket number is in the second column (index 1)
+
+            if (currentTicket !== previousTicket) {
+                // Switch the color class if the ticket number is different
+                rowColorClass = (rowColorClass === 'odd') ? 'even' : 'odd';
+            }
+
+            // Remove both classes and add the updated color class
+            $(this).removeClass('odd even').addClass(rowColorClass);
+
+            previousTicket = currentTicket;
+        });
+    }
+
+    // Call the function after the DataTable is drawn or re-drawn
+    $('#myDataTable').on('draw.dt', function () {
+        applyRowColors();
+    });
+
+    // Call the function on page load to set the initial row colors
+    applyRowColors();
 })();
 </script>
+
+<style>
+    /* Set the background color for odd rows to blue */
+    #myDataTable tbody tr.odd {
+        background-color: #fabebe;
+    }
+
+    /* Set the background color for even rows to the default color (white or any other) */
+    #myDataTable tbody tr.even {
+        background-color: white;
+    }
+</style>
 @endpush
  

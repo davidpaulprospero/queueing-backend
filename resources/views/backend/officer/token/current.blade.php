@@ -90,8 +90,24 @@
 
     function loadHandler() {
         setTimeout(doMyStuff, 2000);
-        // addEventListenersForTakeButtons();
+    
     }
+
+function enableDisableTakeButtons(currentTicketNumber) {
+    const takeButtons = document.querySelectorAll('.take-button');
+
+    takeButtons.forEach(button => {
+        const ticketNumber = button.getAttribute('data-ticket-number');
+
+        // Disable the "Take" button if the officer already has the current ticket
+        if (ticketNumber === currentTicketNumber) {
+            button.setAttribute('disabled', 'disabled');
+        } else {
+            // Enable the "Take" button for other tickets
+            button.removeAttribute('disabled');
+        }
+    });
+}
 
     function addEventListenersForTakeButtons() {
         const takeButtons = document.querySelectorAll('.take-button');
@@ -183,7 +199,7 @@
                     var currentSl = index + 1;
                     var departmentName = token.department_id ? response.departments[token.department_id] : '';
                     var counterName = token.counter_id ? response.counters[token.counter_id] : '';
-                    var statusHtml = token.status === 0 ? '<span class="label label-primary">' + '{{ trans('app.pending') }}' + '</span>' : '';
+                    var statusHtml = token.status === 0 ? '<span class="label label-primary">' + '{{ trans('app.pending') }}' + '</span>' : '<span class="label label-danger">' + 'Stop' + '</span>';
                     var tokenId = token.id;
                     var createdAt = new Date(token.created_at);
                     var day = createdAt.getDate();
@@ -219,7 +235,8 @@
                     var row = this;
                     var rowData = row.data();
                     var tokenId = rowData[8]; // Get the token ID from the 8th column
-                    var token = rowData[1]; // Get the token from the 2nd column
+                    var token = rowData[1]; 
+                    var currentTicketNumber = rowData[1];
 
                     var buttonsHtml = '<div class="btn-group"> ' +
                         '<button class="btn btn-primary take-button" data-ticket-id="' + tokenId + '">Take</button>' + '<button class="btn btn-primary call-button" data-ticket-id="' + token + '">Call</button>' +
@@ -234,15 +251,58 @@
 
                     // Replace the empty cell in the 7th column with the button HTML
                     $(row.node()).find('td:eq(8)').html(buttonsHtml);
+                   
+                   
                 });
                 addEventListenersForTakeButtons();
+                enableDisableTakeButtons(currentTicketNumber);
+               
             }
         });
         loadHandler(); 
         
     }
 
+    function applyRowColors() {
+        var previousTicket = null;
+        var rows = $('#myDataTable tbody tr');
+        var rowColorClass = 'odd'; // Set the initial color class to 'odd'
+
+        rows.each(function(index) {
+            var currentTicket = $(this).find('td:eq(1)').text(); // Assuming ticket number is in the second column (index 1)
+
+            if (currentTicket !== previousTicket) {
+                // Switch the color class if the ticket number is different
+                rowColorClass = (rowColorClass === 'odd') ? 'even' : 'odd';
+            }
+
+            // Remove both classes and add the updated color class
+            $(this).removeClass('odd even').addClass(rowColorClass);
+
+            previousTicket = currentTicket;
+        });
+    }
+
+    // Call the function after the DataTable is drawn or re-drawn
+    $('#myDataTable').on('draw.dt', function () {
+        applyRowColors();
+    });
+
+    // Call the function on page load to set the initial row colors
+    applyRowColors();
 })();
 </script>
+
+<style>
+    /* Set the background color for odd rows to blue */
+    #myDataTable tbody tr.odd {
+        background-color: #fabebe;
+    }
+
+    /* Set the background color for even rows to the default color (white or any other) */
+    #myDataTable tbody tr.even {
+        background-color: white;
+    }
+</style>
 @endpush
  

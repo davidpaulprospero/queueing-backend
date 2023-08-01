@@ -183,10 +183,15 @@ class TokenController extends Controller
     {  
         @date_default_timezone_set(session('app.timezone'));
         $currentDateTime = now()->format('Y-m-d H:i:s');
-        $token_setting = TokenSetting :: where('user_id', auth()->user()->id)->first();
-        $tokens = Token::where('status', '0')
+        $token_setting = TokenSetting::where('user_id', auth()->user()->id)->first();
+    
+        // Get the current date in 'Y-m-d' format
+        $currentDate = now()->toDateString();
+    
+        $tokens = Token::whereIn('status', [0,2])
             ->where('created_at', '<=', $currentDateTime)
             ->where('department_id', $token_setting->department_id)
+            ->whereDate('created_at', $currentDate) // Filter tokens created today
             ->orderBy('is_vip', 'DESC')
             ->orderBy('id', 'ASC')
             ->with('transactionType')
@@ -239,8 +244,6 @@ class TokenController extends Controller
     {
         @date_default_timezone_set(session('app.timezone'));
 
-        //send sms immediately
-        $setting  = SmsSetting::first(); 
         $token = DB::table('token AS t')
             ->select(
                 "t.token_no AS token",
@@ -255,43 +258,16 @@ class TokenController extends Controller
             ->leftJoin('user AS u', 'u.id', '=', 't.user_id')
             ->where('t.id', $id)
             ->first();
-            
-        // if (!empty($token->mobile))
-        // {
-        //     $response = (new SMS_lib)
-        //         ->provider("$setting->provider")
-        //         ->api_key("$setting->api_key")
-        //         ->username("$setting->username")
-        //         ->password("$setting->password")
-        //         ->from("$setting->from")
-        //         ->to($token->mobile)
-        //         ->message($setting->recall_sms_template, array(
-        //             'TOKEN'  =>$token->token,
-        //             'MOBILE' =>$token->mobile,
-        //             'DEPARTMENT'=>$token->department,
-        //             'COUNTER'=>$token->counter,
-        //             'OFFICER'=>$token->officer,
-        //             'DATE'   =>$token->date
-        //         ))
-        //         ->response();
-        //     $api = json_decode($response, true); 
 
-        //     //store sms information 
-        //     $sms = new SmsHistory; 
-        //     $sms->from        = $setting->from;
-        //     $sms->to          = $token->mobile;
-        //     $sms->message     = $api['message'];
-        //     $sms->response    = $response;
-        //     $sms->created_at  = date('Y-m-d H:i:s');
-        //     $sms->save();
-        // } 
+        $user = auth()->user();
+        $counterId = $user->tokenSettings->first()->counter_id;
 
         Token::where('id', $id)
-            ->where('user_id', auth()->user()->id )
             ->update([
+                'user_id' => $user->id,
+                'counter_id' => $counterId,
                 'updated_at' => date('Y-m-d H:i:s'), 
-                'status'     => 0,
-                'sms_status' => 2
+                'status'     => 0
             ]);
 
         //RECALL 
@@ -300,15 +276,29 @@ class TokenController extends Controller
     
     public function stoped($id = null)
     {
-        Token::where('id', $id)
-            ->update([
-                'updated_at' => date('Y-m-d H:i:s'), 
-                'status'     => 2,
-                'sms_status' => 1
-            ]);
-
+        // Retrieve the token based on the provided ID
+        $token = Token::find($id);
+    
+        if (!$token) {
+            return redirect()->back()->with('error', trans('app.token_not_found'));
+        }
+    
+        // Get all tokens with the same token_no and department that were created today
+        $tokensToUpdate = Token::where('token_no', $token->token_no)
+            ->where('department_id', $token->department_id)
+            ->whereDate('created_at', now()->format('Y-m-d'))
+            ->get();
+    
+        // Update counter_id, status, sms_status, and updated_at for each of the tokens
+        foreach ($tokensToUpdate as $tokenToUpdate) {
+            $tokenToUpdate->counter_id = null;
+            $tokenToUpdate->status = 2;
+            $tokenToUpdate->updated_at = now()->format('Y-m-d H:i:s');
+            $tokenToUpdate->save();
+        }
+    
         return redirect()->back()->with('message', trans('app.update_successfully'));
-    } 
+    }    
 
     public function complete($id = null)
     {

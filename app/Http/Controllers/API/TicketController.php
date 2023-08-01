@@ -75,17 +75,7 @@ class TicketController extends Controller
                     continue;
                 }
 
-                // Find the counter with the fewest tokens or assign a counter based on previous assignments
-                // $counterId = $this->getCounterForTransaction($departmentId, $transactionTypeId, $userSubmission, $counterAssignments, $availableCounters);
                 $counterId = null;
-
-                // if (!$counterId) {
-                //     $tokens[] = [
-                //         'ticket' => null,
-                //         'message' => 'No available counter found for the department',
-                //     ];
-                //     continue;
-                // }
 
                 $transactionType = TransactionType::find($transactionTypeId);
 
@@ -157,16 +147,20 @@ class TicketController extends Controller
     {
         $departmentCode = strtoupper(Department::where('id', $departmentId)->value('key'));
         $transactionTypeCode = $isMultipleTransaction ? 'M' : 'S';
-
-        $ticketKey = $departmentCode . $transactionTypeCode;
-
+    
+        // Use the current date to create a unique key for the ticket numbers
+        $dateKey = date('Ymd');
+    
+        $ticketKey = $departmentCode . $transactionTypeCode . $dateKey;
+    
         if (!isset($ticketNumbers[$ticketKey])) {
             $ticketNumbers[$ticketKey] = Token::where('department_id', $departmentId)
                 ->where('transaction_type_id', $transactionTypeId)
+                ->whereDate('created_at', now()->toDateString()) // Filter tickets for the current date
                 ->max('token_no');
-
+    
             if (!$ticketNumbers[$ticketKey]) {
-                $ticketNumbers[$ticketKey] = $departmentCode . $transactionTypeCode . '-00001';
+                $ticketNumbers[$ticketKey] = $departmentCode . $transactionTypeCode . '-' . '00001';
             } else {
                 $ticketNumbers[$ticketKey]++;
                 $ticketNumbers[$ticketKey] = str_pad($ticketNumbers[$ticketKey], 5, '0', STR_PAD_LEFT);
@@ -174,9 +168,9 @@ class TicketController extends Controller
                 $ticketNumbers[$ticketKey] = $departmentCode . $transactionTypeCode . '-' . $ticketNumbers[$ticketKey];
             }
         }
-
+    
         return $ticketNumbers[$ticketKey];
-    }
+    }    
 
 
     private function getCounterWithFewestTokens($availableCounters)

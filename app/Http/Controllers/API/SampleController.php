@@ -26,18 +26,19 @@ class SampleController extends Controller
     {
         $userId = $request->input('user_id');
         $user = User::find($userId);
-
+    
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        // return response()->json(['message' => $user], 404);
+    
         $counterId = $user->tokenSettings->first()->counter_id;
+    
         // Find the token setting with the given ticketId, counter_id, and user_id
         $tokenSetting = TokenSetting::where([
             'counter_id' => $counterId,
             'user_id' => $userId,
         ])->first();
-
+    
         if (!$tokenSetting) {
             return response()->json(['message' => 'Token setting not found'], 404);
         }
@@ -48,11 +49,25 @@ class SampleController extends Controller
     
             // Check if the token exists and belongs to the user's department
             if ($token && $token->department_id == $tokenSetting->department_id) {
-                // Update the counter_id directly on the model and save it
-                $token->update(['counter_id' => $counterId, 'user_id' => $userId]);
+                $currentTime = now()->format('Y-m-d H:i:s');
+    
+                // Get all tokens with the same token_no and department that were created today
+                $tokensToUpdate = Token::where('token_no', $token->token_no)
+                    ->where('department_id', $tokenSetting->department_id)
+                    ->whereDate('created_at', now()->format('Y-m-d'))
+                    ->get();
+    
+                // Update counter_id, user_id, status, and updated_at for each of the tokens
+                foreach ($tokensToUpdate as $tokenToUpdate) {
+                    $tokenToUpdate->counter_id = $counterId;
+                    $tokenToUpdate->user_id = $userId;
+                    $tokenToUpdate->status = 0;
+                    $tokenToUpdate->updated_at = $currentTime;
+                    $tokenToUpdate->save();
+                }
     
                 // Optionally, you can return a response indicating a successful update
-                return response()->json(['message' => 'Token updated successfully'], 200);
+                return response()->json(['message' => 'Tokens updated successfully', 'currentTime' => now()], 200);
             } else {
                 // Return a response indicating that the token was not found or does not belong to the user's department
                 return response()->json(['message' => 'Token not found or invalid'], 404);
@@ -61,10 +76,12 @@ class SampleController extends Controller
             // Return a response indicating that the token setting was not found
             return response()->json(['message' => 'Token setting not found'], 404);
         }
-    }
+    }    
 
      public function getNowServingTickets()
      {
+        // Get the current date in 'Y-m-d' format
+        $currentDate = now()->toDateString();
          $nowServingTickets = Token::select(
              'token.*',
              'department.name as department',
@@ -77,7 +94,8 @@ class SampleController extends Controller
              ->leftJoin('user', 'token.user_id', '=', 'user.id')
              ->whereNotNull('token.counter_id')
              ->where('token.status', 0)
-             ->orderBy('token.created_at', 'DESC')
+             ->whereDate('token.created_at', $currentDate) // Filter tokens created today
+             ->orderBy('token.updated_at', 'DESC')
              ->groupBy('token.counter_id', 'token.department_id')
              ->get();
      
