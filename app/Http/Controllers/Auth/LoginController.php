@@ -18,9 +18,6 @@ class LoginController extends Controller
         if (auth()->user()->hasRole('admin')) {
             return '/admin';
         }
-        elseif (auth()->user()->hasRole('receptionist')) {
-            return '/receptionist';
-        }
         elseif (auth()->user()->hasRole('user')) {
             return '/user';
         }

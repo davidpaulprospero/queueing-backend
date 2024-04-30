@@ -6,46 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Display; 
 use App\Models\DisplaySetting; 
 use Carbon\Carbon;
-use App\Models\SmsSetting;
-use App\Models\SmsHistory;
 use App\Models\Token;
 use DB, Response, File, Validator;
 
 
 class CronjobController extends Controller
 { 
-    public function sms()
-    { 
-        $setting = DisplaySetting::first();  
-
-        if ($setting->display==5)
-        {
-            //display 5: hospital queue - like display 2
-            return $this->display3();
-        }
-        elseif ($setting->display==4)
-        {
-            //display 4: department wise queue
-            return $this->display4();
-        }
-        elseif ($setting->display==3)
-        { 
-            //display 3: counter wise queue 2
-            return $this->display3();
-        }
-        elseif ($setting->display==2)
-        {
-            //display 2: counter wise queue
-            return $this->display3();
-        }
-        else
-        {
-            //display 1: single line queue
-            return $this->display1();
-        }
-    }
-
-    //single line q
     public function display1()
     {  
         $setting   = DisplaySetting::first();  
@@ -58,7 +24,6 @@ class CronjobController extends Controller
                 "c.name AS counter",
                 DB::raw("CONCAT_WS(' ', o.firstname, o.lastname) as officer"),
                 "t.status",
-                "t.sms_status", 
                 "t.created_at AS date" 
             )
             ->leftJoin("department AS d", "d.id", "=", "t.department_id")
@@ -71,14 +36,7 @@ class CronjobController extends Controller
             ->limit(1)
             ->get(); 
 
-            if (!empty($tokenInfo->mobile) && $tokenInfo->status==0 && ($tokenInfo->sms_status==0 || $tokenInfo->sms_status==2)) 
-            {
-                // send sms
-                $data['status'] = true;
-                $data['result'] = $tokenInfo;
-                $this->sendSMS($tokenInfo, $setting->alert_position); 
-            }
-            else
+            if (!empty($tokenInfo->mobile) && $tokenInfo->status==0) 
             {
                 //nothing
                 $data['status'] = false;
@@ -110,7 +68,6 @@ class CronjobController extends Controller
                     "c.name AS counter",
                     DB::raw("CONCAT_WS(' ', o.firstname, o.lastname) as officer"),
                     "t.status",
-                    "t.sms_status", 
                     "t.created_at" 
                 )
                 ->leftJoin("department AS d", "d.id", "=", "t.department_id")
@@ -135,21 +92,13 @@ class CronjobController extends Controller
                     'mobile'     => $token->mobile,
                     'date'       => $token->created_at,
                     'status'     => $token->status,
-                    'sms_status' => $token->sms_status,
                 ); 
             }   
         }  
 
         foreach ($allToken as $counter => $tokenInfo) 
         {  
-            if (!empty($tokenInfo->mobile) && $tokenInfo->status==0 && ($tokenInfo->sms_status==0 || $tokenInfo->sms_status==2)) 
-            {
-                $data['status'] = true;
-                $data['result'][] = $tokenInfo;
-                // send sms 
-                $this->sendSMS($tokenInfo, $setting->alert_position); 
-            }
-            else 
+            if (!empty($tokenInfo->mobile) && $tokenInfo->status==0) 
             {
                 $data['status'] = false;
                 $data['result'][] = $tokenInfo;
@@ -181,7 +130,6 @@ class CronjobController extends Controller
                     "c.name AS counter",
                     DB::raw("CONCAT_WS(' ', o.firstname, o.lastname) as officer"),
                     "t.status",
-                    "t.sms_status", 
                     "t.created_at" 
                 )
                 ->leftJoin("department AS d", "d.id", "=", "t.department_id")
@@ -206,21 +154,13 @@ class CronjobController extends Controller
                     'mobile'     => $token->mobile,
                     'date'       => $token->created_at,
                     'status'     => $token->status,
-                    'sms_status' => $token->sms_status,
                 ); 
             }   
         }  
 
         foreach ($allToken as $counter => $tokenInfo) 
         {  
-            if (!empty($tokenInfo->mobile) && $tokenInfo->status==0 && ($tokenInfo->sms_status==0 || $tokenInfo->sms_status==2)) 
-            {
-                $data['status'] = true;
-                $data['result'][] = $tokenInfo;
-                // send sms 
-                $this->sendSMS($tokenInfo, $setting->alert_position); 
-            }
-            else 
+            if (!empty($tokenInfo->mobile) && $tokenInfo->status==0) 
             {
                 $data['status'] = false;
                 $data['result'][] = $tokenInfo;
@@ -229,53 +169,4 @@ class CronjobController extends Controller
 
         return Response::json($data);
     }
-  
-    /*
-    *---------------------------------------------------------
-    * SEND SMS
-    *--------------------------------------------------------- 
-    */
-    public function sendSMS($token, $alert_position = null)
-    {
-        date_default_timezone_set(session('app.timezone'));
-        
-        //send sms immediately
-        $setting  = SmsSetting::first();   
-
-        $template = ($token->sms_status==2)?$setting->recall_sms_template:$setting->sms_template;
-
-        $response = (new SMS_lib)
-            ->provider("$setting->provider")
-            ->api_key("$setting->api_key")
-            ->username("$setting->username")
-            ->password("$setting->password")
-            ->from("$setting->from")
-            ->to($token->mobile)
-            ->message($template, array(
-                'TOKEN'  => $token->token,
-                'MOBILE' => $token->mobile,
-                'DEPARTMENT'=> $token->department,
-                'COUNTER'=> $token->counter,
-                'OFFICER'=> $token->officer,
-                'DATE'   => $token->date,
-                'WAIT'   => $alert_position
-            ))
-            ->response();
-
-        $api = json_decode($response, true); 
- 
-        //store sms information 
-        $sms = new SmsHistory; 
-        $sms->from        = $setting->from;
-        $sms->to          = $token->mobile;
-        $sms->message     = $api['message'];
-        $sms->response    = $response;
-        $sms->created_at  = date('Y-m-d H:i:s');
-        $sms->save();
-
-        //SMS SENT
-        Token::where('id', $token->id)->update(['sms_status' => 1]);
-    } 
-
-
 }

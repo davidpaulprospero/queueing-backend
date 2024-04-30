@@ -47,7 +47,6 @@ return [
     'mobile'      => 'মোবাইল নাম্বার',
     'user_type'   => 'ইউজার এর ধরন',
     'officer'     => 'অফিসার',
-    'receptionist' => 'অভ্যর্থনাকারী',
     'admin'       => 'অ্যাডমিন',
     'client'      => 'ক্লায়েন্ট',
     'photo'       => 'ছবি',
@@ -143,24 +142,7 @@ return [
     'copyright'   => 'কপিরাইট',
     'favicon'     => 'ফেভিকন',
     'logo'        => 'লোগো',
-    'profile_setting' => 'প্রোফাইল সেটিংস',
-
-    /*SMS*/
-    'sms'         => 'এসএমএস',
-    'new_sms'     => 'নতুন এসএমএস',
-    'sms_history' => 'এসএমএস হিস্ট্রি',
-    'sms_setting' => 'এসএমএস সেটিং',
-    'sms_sent'    => 'এসএমএস পাঠানো হয়েছে!', 
-    'provider'    => 'প্রোভাইডার', 
-    'api_key'     => 'API Key', 
-    'username'    => 'ব্যবহারকারীর নাম', 
-    'from'        => 'থেকে', 
-    'sms_alert'   => 'এসএমএস এলার্ট', 
-    'alert_position' => 'সতর্কতা অবস্থান', 
-    'client_mobile' => 'ক্লায়েন্ট মোবাইল নং', 
-    'invalid_input' => 'ইনভ্যালিড ইনপুট', 
-    'sms_template'  => 'এসএমএস টেমপ্লেট', 
-    'recall_sms_template'  => 'পুনরাহ্বান এসএমএস টেমপ্লেট',   
+    'profile_setting' => 'প্রোফাইল সেটিংস', 
     
     // MESSAGE EXTRA
     'download'     => 'ডাউনলোড',

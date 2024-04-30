@@ -149,7 +149,9 @@
                     var statusHtml = token.status === 0 ? '<span class="label label-primary">' + '{{ trans('app.pending') }}' + '</span>' : '';
                     var tokenId = token.id;
                     var createdAtFormatted = new Date(token.created_at).toLocaleString();  // Format the created_at date
-
+                    var hello = null;
+                    var hi = null;
+                    
                     return [
                     currentSl,
                     token.token_no,
@@ -162,7 +164,6 @@
                     tokenId, // Store the token ID in the 8th column
                     hello,     // Add empty data for the 9th column
                     hi,     // Add empty data for the 10th column
-                    // Add other columns as needed
                 ];
 
                 });

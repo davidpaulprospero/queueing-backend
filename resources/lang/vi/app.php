@@ -48,7 +48,6 @@ return [
     'mobile'      => 'Số di động',
     'user_type'   => 'Loại User',
     'officer'     => 'Quản lý',
-    'receptionist' => 'Lễ tân',
     'admin'       => 'Quản trị viên',
     'client'      => 'Khách hàng',
     'photo'       => 'ảnh',
@@ -147,23 +146,6 @@ return [
     'favicon'     => 'Favicon',
     'logo'        => 'Logo',
     'profile_setting' => 'Thiết lập hồ sơ',
-
-    /*SMS*/
-    'sms'         => 'SMS',
-    'new_sms'     => 'SMS mới',
-    'sms_history' => 'Lịch sử gửi SMS',
-    'sms_setting' => 'Cài đặt SMS',
-    'sms_sent'    => 'Gửi SMS!',
-    'provider'    => 'Nhà cung cấp',
-    'api_key'     => 'API Key',
-    'username'    => 'Username',
-    'from'        => 'Từ',
-    'sms_alert'   => 'Thông báo SMS',
-    'alert_position' => 'Vị trí Thông báo SMS',
-    'client_mobile' => 'Số điện thoại di động',
-    'invalid_input' => 'Đâu vào không hợp lệ',
-    'sms_template'  => 'SMS mẫu',
-    'recall_sms_template'  => 'Dùng lại mẫu SMS',
 
     /*Message Extra*/
     'download'      => 'Tải xuống',

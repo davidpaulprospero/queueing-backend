@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Officer;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Common\SMS_lib;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\Token;
@@ -10,8 +9,6 @@ use App\Models\Department;
 use App\Models\Counter;
 use App\Models\User;
 use App\Models\TransactionType;
-use App\Models\SmsSetting;
-use App\Models\SmsHistory;
 use App\Models\TokenSetting;
 use DB;
 
@@ -289,7 +286,7 @@ class TokenController extends Controller
             ->whereDate('created_at', now()->format('Y-m-d'))
             ->get();
     
-        // Update counter_id, status, sms_status, and updated_at for each of the tokens
+        // Update counter_id, status and updated_at for each of the tokens
         foreach ($tokensToUpdate as $tokenToUpdate) {
             $tokenToUpdate->counter_id = null;
             $tokenToUpdate->status = 2;

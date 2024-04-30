@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Officer;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Common\SMS_lib;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\Token;
@@ -10,8 +9,6 @@ use App\Models\Department;
 use App\Models\Counter;
 use App\Models\User;
 use App\Models\TransactionType;
-use App\Models\SmsSetting;
-use App\Models\SmsHistory;
 use App\Models\TokenSetting;
 use DB;
 
@@ -241,8 +238,6 @@ class TokenController extends Controller
     {
         @date_default_timezone_set(session('app.timezone'));
 
-        //send sms immediately
-        $setting  = SmsSetting::first(); 
         $token = DB::table('token AS t')
             ->select(
                 "t.token_no AS token",
@@ -257,43 +252,12 @@ class TokenController extends Controller
             ->leftJoin('user AS u', 'u.id', '=', 't.user_id')
             ->where('t.id', $id)
             ->first();
-            
-        // if (!empty($token->mobile))
-        // {
-        //     $response = (new SMS_lib)
-        //         ->provider("$setting->provider")
-        //         ->api_key("$setting->api_key")
-        //         ->username("$setting->username")
-        //         ->password("$setting->password")
-        //         ->from("$setting->from")
-        //         ->to($token->mobile)
-        //         ->message($setting->recall_sms_template, array(
-        //             'TOKEN'  =>$token->token,
-        //             'MOBILE' =>$token->mobile,
-        //             'DEPARTMENT'=>$token->department,
-        //             'COUNTER'=>$token->counter,
-        //             'OFFICER'=>$token->officer,
-        //             'DATE'   =>$token->date
-        //         ))
-        //         ->response();
-        //     $api = json_decode($response, true); 
-
-        //     //store sms information 
-        //     $sms = new SmsHistory; 
-        //     $sms->from        = $setting->from;
-        //     $sms->to          = $token->mobile;
-        //     $sms->message     = $api['message'];
-        //     $sms->response    = $response;
-        //     $sms->created_at  = date('Y-m-d H:i:s');
-        //     $sms->save();
-        // } 
 
         Token::where('id', $id)
             ->where('user_id', auth()->user()->id )
             ->update([
                 'updated_at' => date('Y-m-d H:i:s'), 
-                'status'     => 0,
-                'sms_status' => 2
+                'status'     => 0
             ]);
 
         //RECALL 
@@ -305,8 +269,7 @@ class TokenController extends Controller
         Token::where('id', $id)
             ->update([
                 'updated_at' => date('Y-m-d H:i:s'), 
-                'status'     => 2,
-                'sms_status' => 1
+                'status'     => 2
             ]);
 
         return redirect()->back()->with('message', trans('app.update_successfully'));

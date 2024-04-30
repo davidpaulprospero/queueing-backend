@@ -288,10 +288,6 @@ class DisplayController extends Controller
                                 {
                                     $html .=  "<strong>".trans("app.note")."</strong>: <span>$item</span><br>";
                                 }
-                                if ($setting->sms_alert == "1" && $key=='mobile')
-                                {
-                                    $html .=  "<strong>".trans("app.mobile")."</strong>: <span>$item</span><br>";
-                                }
                                 if ($setting->show_department == "1" && $key=='department')
                                 {
                                     $html .=  "<strong>".trans("app.department")."</strong>: <span>$item</span><br>";
@@ -475,10 +471,6 @@ class DisplayController extends Controller
                             {
                                 $html .=  "<strong>".trans("app.note")."</strong>: <span>$item</span><br>";
                             }
-                            if ($setting->sms_alert == "1" && $key=='mobile')
-                            {
-                                $html .=  "<strong>".trans("app.mobile")."</strong>: <span>$item</span><br>";
-                            }
                             if ($setting->show_department == "1" && $key=='department')
                             {
                                 $html .=  "<strong>".trans("app.department")."</strong>: <span>$item</span><br>";
@@ -582,8 +574,7 @@ class DisplayController extends Controller
                     "c.name AS counter",
                     DB::raw("CONCAT_WS(' ', o.firstname, o.lastname) as officer"),
                     "t.updated_at",
-                    "t.status",
-                    "t.sms_status" 
+                    "t.status"
                 )
                 ->leftJoin("department AS d", "d.id", "=", "t.department_id")
                 ->leftJoin("counter AS c", "c.id", "=", "t.counter_id")

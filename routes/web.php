@@ -48,9 +48,6 @@ Route::prefix('common')
 	# switch language
 	Route::get('language/{locale?}', 'LanguageController@index');
 
-	# cron job
-	Route::get('jobs/sms', 'CronjobController@sms');
-
 	# display 
 	Route::get('display','DisplayController@display');  
 	Route::post('display1', 'DisplayController@display1');  
@@ -64,19 +61,6 @@ Route::prefix('common')
 	# -----------------------------------------------------------
 	Route::middleware('auth')
 	    ->group(function() { 
-		#message notification
-		Route::get('message/notify','NotificationController@message'); 
-		# message  
-		Route::get('message','MessageController@show'); 
-		Route::post('message','MessageController@send'); 
-		Route::get('message/inbox','MessageController@inbox'); 
-		Route::post('message/inbox/data','MessageController@inboxData'); 
-		Route::get('message/sent','MessageController@sent'); 
-		Route::post('message/sent/data','MessageController@sentData'); 
-		Route::get('message/details/{id}/{type}','MessageController@details'); 
-		Route::get('message/delete/{id}/{type}','MessageController@delete');  
-		Route::post('message/attachment','MessageController@UploadFiles'); 
-
 		# profile 
 		Route::get('setting/profile','ProfileController@profile');
 		Route::get('setting/profile/edit','ProfileController@profileEditShowForm');
@@ -132,15 +116,6 @@ Route::group(['middleware' => ['auth']], function() {
 		Route::get('counter/edit/{id}','CounterController@showEditForm');
 		Route::post('counter/edit','CounterController@update');
 		Route::get('counter/delete/{id}','CounterController@delete');
-
-		# sms
-		Route::get('sms/new', 'SmsSettingController@form');
-		Route::post('sms/new', 'SmsSettingController@send');
-		Route::get('sms/list', 'SmsSettingController@show');
-		Route::post('sms/data', 'SmsSettingController@smsData');
-		Route::get('sms/delete/{id}', 'SmsSettingController@delete');
-		Route::get('sms/setting', 'SmsSettingController@setting');
-		Route::post('sms/setting', 'SmsSettingController@updateSetting');
 
 		# token
 		Route::get('token/setting','TokenController@tokenSettingView'); 
@@ -211,29 +186,4 @@ Route::group(['middleware' => ['auth']], function() {
 		Route::get('token/stoped/{id}','TokenController@stoped');
 		Route::post('token/print', 'TokenController@viewSingleToken');
 	});
-
-	# -----------------------------------------------------------
-	# RECEPTIONIST
-	# -----------------------------------------------------------
-	Route::prefix('receptionist')
-    ->namespace('Receptionist')
-    ->group(function() { 
-    # home
-	
-    Route::get('/', 'TokenController@tokenAutoView')->middleware('roles:receptionist'); 
-
-    # receptionist homepage
-	Route::get('/receptionist', function () {
-		return view('receptionist.home');
-	})->middleware('allow.guest.access');
-	
-    # token
-    Route::get('token/auto', 'TokenController@tokenAutoView')->middleware('roles:receptionist'); 
-    Route::post('token/auto', 'TokenController@tokenAuto')->middleware('roles:receptionist'); 
-    Route::get('token/create', 'TokenController@showForm')->middleware('roles:receptionist');
-    Route::post('token/create', 'TokenController@create')->middleware('roles:receptionist');
-    Route::get('token/current', 'TokenController@current')->middleware('roles:receptionist'); 
-    Route::post('token/print', 'TokenController@viewSingleToken')->middleware('roles:receptionist');
-});
-
 });

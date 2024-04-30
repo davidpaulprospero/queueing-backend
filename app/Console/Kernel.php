@@ -22,12 +22,6 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
-    {
-        // $schedule->command('inspire')->hourly();
-       $schedule->call('App\Http\Controllers\CronjobController@sms')
-                ->everyMinute();
-    }
 
     /**
      * Register the commands for the application.

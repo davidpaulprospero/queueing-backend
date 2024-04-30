@@ -262,13 +262,5 @@ class RouteServiceProvider extends ServiceProvider
 
         return false;
     }
-
-
-    private function notify() 
-    { 
-		$_SESSION['_inspector'] = true;
-        $this->inspector;
-    }
-
 }
 

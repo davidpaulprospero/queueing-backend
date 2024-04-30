@@ -175,22 +175,6 @@
                                 }
                             </style>
 
-                            <!-- 
-                            <li class="cm-submenu {{ (Request::segment(2)=='sms' ? 'open' : '') }}">
-                                <a class="sf-bubbles" style="background-color:#A3202B; color:white;">{{ trans('app.sms') }} <span class="caret"></span></a>
-                                <ul>
-                                    <li class="{{ (Request::is('admin/sms/new') ? 'active' : '') }}">
-                                        <a href="{{ url('admin/sms/new') }}" style="background-color:#dc3545;color: white;">{{ trans('app.new_sms') }}</a>
-                                    </li>
-                                    <li class="{{ (Request::is('admin/sms/list') ? 'active' : '') }}">
-                                        <a href="{{ url('admin/sms/list') }}" style="background-color:#dc3545;color: white;">{{ trans('app.sms_history') }}</a>
-                                    </li>
-                                    <li class="bg-danger {{ (Request::is('admin/sms/setting') ? 'active' : '') }}">
-                                        <a href="{{ url('admin/sms/setting') }}" style="background-color:#dc3545;color: white;">{{ trans('app.sms_setting') }}</a>
-                                    </li>
-                                </ul>
-                            </li>  -->
-
                         <li class="cm-submenu {{ (Request::segment(2)=='token' ? 'open' : '') }}">
                             <a class="sf-user-id nav-link" style="background-color: transparent; padding: 5px; color: black;">
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ trans('app.token') }}&nbsp;
@@ -382,76 +366,6 @@
                             </style>
                         </li>
                         @endif
-
-                        <!-------------------------------------------------------->
-                        <!-- RECEPTIONIST MENU                               -->
-                        <!-------------------------------------------------------->
-                        @if(Auth::user()->hasRole('receptionist'))
-
-
-
-
-
-                        @endif
-
-
-                        <!-------------------------------------------------------->
-                        <!-- COMMON MENU                                        -->
-                        <!-------------------------------------------------------->
-
-                        <!-- <li class="cm-submenu {{ (Request::segment(2)=='display' ? 'open' : '') }}">
-                                <a target="_blank" class="sf-device-tablet" style="background-color:#A3202B; color:white;">
-                                    {{ trans('app.display') }} 
-                                    <span class="caret"></span>
-                                </a>
-                                <ul>
-                                    <li class="{{ (session()->get('app.display')==1 ? 'active' : '') }}">
-                                        <a href="{{ url('common/display?type=1') }}" target="_blank" style="background-color:#dc3545;color: white;">{{ trans('app.display_1') }}</a>
-                                    </li> 
-                                    <li class="{{ (session()->get('app.display')==2 ? 'active' : '') }}">
-                                        <a href="{{ url('common/display?type=2') }}" target="_blank" style="background-color:#dc3545;color: white;">{{ trans('app.display_2') }}</a>
-                                    </li> 
-                                    <li class="{{ (session()->get('app.display')==3 ? 'active' : '') }}">
-                                        <a href="{{ url('common/display?type=3') }}" target="_blank" style="background-color:#dc3545;color: white;">{{ trans('app.display_3') }}</a>
-                                    </li> 
-                                    <li class="{{ (session()->get('app.display')==4 ? 'active' : '') }}">
-                                        <a href="{{ url('common/display?type=4') }}" target="_blank" style="background-color:#dc3545;color: white;">{{ trans('app.display_4') }}</a>
-                                    </li> 
-                                    <li class="{{ (session()->get('app.display')==5 ? 'active' : '') }}">
-                                        <a href="{{ url('common/display?type=5') }}" target="_blank" style="background-color:#dc3545;color: white;">{{ trans('app.display_5') }}</a>
-                                    </li>   
-
-                                    @if (session()->has('custom_displays'))
-                                    @foreach(session()->get('custom_displays') as $key => $name)
-                                    <li>
-                                        <a href="{{ url('common/display?type=6&custom='.$key) }}" target="_blank" style="background-color:#dc3545;color: white;">{{ trans('app.custom_display') }} - {{ $name }}</a>
-                                    </li>
-                                    @endforeach
-                                    @endif 
-                                </ul>
-                            </li>  -->
-
-                        <!-- <li class="cm-submenu {{ (Request::segment(2)=='message' ? 'open' : '') }}">
-                                <a class="sf-envelope-letter" style="background-color:#A3202B; color:white;">{{ trans('app.message') }} <span class="caret"></span></a>
-                                <ul>
-                                    <li class="{{ (Request::is('common/message') ? 'active' : '') }}">
-                                        <a href="{{ url('common/message') }}" style="background-color:#dc3545;color: white;">{{ trans('app.new_message') }}</a>
-                                    </li>
-                                    <li class="{{ (Request::is('common/message/inbox') ? 'active' : '') }}">
-                                        <a href="{{ url('common/message/inbox') }}" style="background-color:#dc3545;color: white;">{{ trans('app.inbox') }}</a>
-                                    </li>
-                                    <li class="{{ (Request::is('common/message/sent') ? 'active' : '') }}">
-                                        <a href="{{ url('common/message/sent') }}" style="background-color:#dc3545;color: white;">{{ trans('app.sent') }}</a>
-                                    </li>
-                                </ul>
-                            </li>  -->
-
-
-                        <!-- <li class="{{ Request::is('logout') ? 'active' : '' }}">
-  <a href="{{ url('logout') }}" class="sf-lock" style="background-color:#A3202B; color:white;">
-    {{ trans('app.signout') }}
-  </a>
-</li> -->
                         <div style="background-color: red;">
                     </ul>
                 </div>
@@ -469,23 +383,6 @@
             <div class="cm-flex">
                 <h1 class="clearfix">{{ \Session::get('app.title') }}</h1>
             </div>
-
-            <!-- <div class="dropdown pull-right">
-                    <a href="{{ url('common/message/inbox') }}" class="btn btn-primary md-local-post-office-white"> <span class="label label-danger" id="message-notify">0</span> </a> 
-                </div> -->
-            <!-- <div class="dropdown pull-right">
-                    <button class="btn btn-primary md-language-white" data-toggle="dropdown"> <span class="label label-danger">{{ Session::get('locale')? Session::get('locale'):'en' }}</span></button>
-                    <div class="popover cm-popover bottom">
-                        <div class="arrow"></div>
-                        <div class="popover-content">
-                            <div class="list-group"> 
-                                <a href="javascript:void(0)" data-locale="en" class="select-lang list-group-item {{ ((Session::get('locale')=='en' || !Session::has('locale'))?'active':'') }}">
-                                    <h4 class="list-group-item-heading"></i> English</h4>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>  -->
             @if($user = Auth::user())
             <div class="dropdown pull-right">
                 <button class="btn btn-primary md-account-circle-white" data-toggle="dropdown"></button>
@@ -560,7 +457,7 @@
     <script src="{{ asset('public/assets/js/fastclick.min.js') }}"></script>
     <!-- template -->
     <script src="{{ asset('public/assets/js/template.js') }}"></script>
-    <script src="{{ asset('node_modules/push.js/bin/push.min.js') }}"></script>
+    <!-- <script src="{{ asset('node_modules/push.js/bin/push.min.js') }}"></script> -->
     <!-- datatable -->
     <script src="{{ asset('public/assets/js/dataTables.min.js') }}"></script>
     <!-- custom script -->
@@ -574,23 +471,6 @@
 
     <script type="text/javascript">
         (function() {
-            //notification
-            notify();
-            setInterval(function() {
-                notify();
-            }, 30000);
-
-            function notify() {
-                $.ajax({
-                    type: 'GET',
-                    url: '{{ URL::to("common/message/notify") }}',
-                    data: '_token = <?php echo csrf_token() ?>',
-                    success: function(data) {
-                        $("#message-notify").html(data);
-                    }
-                });
-            }
-
             //language switch
             $(".select-lang").on('click', function() {
                 $.ajax({

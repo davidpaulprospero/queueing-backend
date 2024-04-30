@@ -254,7 +254,6 @@
 .md-stay-primary-landscape{background-image:url("../img/md/dark/stay-primary-landscape.svg")!important;}
 .md-stay-primary-portrait{background-image:url("../img/md/dark/stay-primary-portrait.svg")!important;}
 .md-swap-calls{background-image:url("../img/md/dark/swap-calls.svg")!important;}
-.md-textsms{background-image:url("../img/md/dark/textsms.svg")!important;}
 .md-voicemail{background-image:url("../img/md/dark/voicemail.svg")!important;}
 .md-vpn-key{background-image:url("../img/md/dark/vpn-key.svg")!important;}
 .md-add{background-image:url("../img/md/dark/add.svg")!important;}
@@ -708,8 +707,6 @@
 .md-play-install{background-image:url("../img/md/dark/play-install.svg")!important;}
 .md-sd-card{background-image:url("../img/md/dark/sd-card.svg")!important;}
 .md-sim-card-alert{background-image:url("../img/md/dark/sim-card-alert.svg")!important;}
-.md-sms{background-image:url("../img/md/dark/sms.svg")!important;}
-.md-sms-failed{background-image:url("../img/md/dark/sms-failed.svg")!important;}
 .md-sync{background-image:url("../img/md/dark/sync.svg")!important;}
 .md-sync-disabled{background-image:url("../img/md/dark/sync-disabled.svg")!important;}
 .md-sync-problem{background-image:url("../img/md/dark/sync-problem.svg")!important;}
@@ -1001,7 +998,6 @@
 .md-stay-primary-landscape-white{background-image:url("../img/md/light/stay-primary-landscape.svg")!important;}
 .md-stay-primary-portrait-white{background-image:url("../img/md/light/stay-primary-portrait.svg")!important;}
 .md-swap-calls-white{background-image:url("../img/md/light/swap-calls.svg")!important;}
-.md-textsms-white{background-image:url("../img/md/light/textsms.svg")!important;}
 .md-voicemail-white{background-image:url("../img/md/light/voicemail.svg")!important;}
 .md-vpn-key-white{background-image:url("../img/md/light/vpn-key.svg")!important;}
 .md-add-white{background-image:url("../img/md/light/add.svg")!important;}
@@ -1455,8 +1451,6 @@
 .md-play-install-white{background-image:url("../img/md/light/play-install.svg")!important;}
 .md-sd-card-white{background-image:url("../img/md/light/sd-card.svg")!important;}
 .md-sim-card-alert-white{background-image:url("../img/md/light/sim-card-alert.svg")!important;}
-.md-sms-white{background-image:url("../img/md/light/sms.svg")!important;}
-.md-sms-failed-white{background-image:url("../img/md/light/sms-failed.svg")!important;}
 .md-sync-white{background-image:url("../img/md/light/sync.svg")!important;}
 .md-sync-disabled-white{background-image:url("../img/md/light/sync-disabled.svg")!important;}
 .md-sync-problem-white{background-image:url("../img/md/light/sync-problem.svg")!important;}

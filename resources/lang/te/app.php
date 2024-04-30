@@ -48,7 +48,6 @@ return [
     'mobile' => 'మొబైల్ నం',
     'user_type' => 'వాడుకరి వర్గం',
     'officer'     => 'అధికారి',
-    'receptionist' => 'రిసెప్షనిస్ట్',
     'admin'       => 'అడ్మిన్',
     'client'      => 'క్లయింట్',
     'photo' => 'ఫోటో',
@@ -148,24 +147,6 @@ return [
     'logo' => 'లోగో',
     'profile_setting' => 'ప్రొఫైల్ సెట్టింగు',
 
-    /*SMS*/ 
-    'sms' => 'SMS',
-    'new_sms' => 'క్రొత్త SMS',
-    'sms_history' => 'SMS చరిత్ర',
-    'sms_setting' => 'SMS సెట్టింగు',
-    'sms_sent' => 'SMS పంపబడింది!',
-    'provider' => 'ప్రొవైడర్',
-    'api_key' => 'API కీ',
-    'username' => 'యూజర్పేరు',
-    'from' => 'ఫ్రం',
-    'sms_alert' => 'SMS హెచ్చరిక',
-    'alert_position' => 'హెచ్చరిక స్థానం',
-    'client_mobile' => 'క్లయింట్ మొబైల్ నం.',
-    'invalid_input' => 'చెల్లని ఇన్పుట్',
-    'sms_template' => 'SMS మూస',
-    'recall_sms_template' => 'SMS ను గుర్తుకు తెచ్చుకోండి',
-
-    /*SMS*/ 
     'download' => 'డౌన్లోడ్',
     'attachment' => 'అటాచ్మెంట్',
 

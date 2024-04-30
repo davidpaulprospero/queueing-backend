@@ -25,7 +25,6 @@ class CreateDisplayTable extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->boolean('display')->default(1)->comment('1-single, 2/3-counter,4-department,5-hospital');
             $table->boolean('keyboard_mode')->default(1)->comment('0-inactive,1-active');
-            $table->boolean('sms_alert')->default(1)->comment('0-inactive, 1-active ');
             $table->boolean('show_note')->default(0)->comment('0-inactive, 1-active ');
             $table->boolean('show_officer')->default(1);
             $table->boolean('show_department')->default(1);

@@ -47,7 +47,6 @@ return [
     'mobile'      => 'رقم المحمول',
     'user_type'   => 'نوع المستخدم',
     'officer'     => 'ضابط',
-    'receptionist' => 'موظف الإستقبال',
     'admin'       => 'مدير',
     'client'      => 'زبون',
     'photo'       => 'صورة فوتوغرافية',
@@ -145,23 +144,6 @@ return [
     'favicon'     => 'فافيكون',
     'logo'        => 'شعار',
     'profile_setting' => 'إعداد الملف الشخصي',
-
-    /*SMS*/
-    'sms'         => 'SMS',
-    'new_sms'     => 'رسالة نصية جديدة',
-    'sms_history' => 'تاريخ الرسائل النصية القصيرة',
-    'sms_setting' => 'إعداد الرسائل القصيرة',
-    'sms_sent'    => 'الرسائل القصيرة المرسلة!', 
-    'provider'    => 'مزود', 
-    'api_key'     => 'API Key', 
-    'username'    => 'اسم المستخدم', 
-    'from'        => 'من عند', 
-    'sms_alert'   => 'تنبيه SMS', 
-    'alert_position' => 'موقف التنبيه', 
-    'client_mobile' => 'رقم المحمول', 
-    'invalid_input' => 'بيانات غير صالحة', 
-    'sms_template'  => 'قالب SMS', 
-    'sms_template'  => 'قالب SMS Recall', 
 
     // Message Extra
     'download'    => 'تنزيل',

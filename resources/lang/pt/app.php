@@ -47,7 +47,6 @@ return [
     'mobile'      => 'Número de celular',
     'user_type'   => 'Tipo de usuário',
     'officer'     => 'Policial',
-    'receptionist' => 'Recepcionista',
     'admin'       => 'Admin',
     'client'      => 'Cliente',
     'photo'       => 'Photo',
@@ -145,24 +144,6 @@ return [
     'favicon'     => 'Favicon',
     'logo'        => 'Logotipo',
     'profile_setting' => 'Configuração de perfil',
-
-    /* SMS */
-    'sms'          => 'SMS',
-    'new_sms'      => 'Novo SMS',
-    'sms_history'  => 'Histórico de SMS',
-    'sms_setting'  => 'Configuração SMS',
-    'sms_sent'     => 'Envio de SMS!',
-    'provedor'     => 'Provedor',
-    'api_key'      => 'API Key',
-    'username'     => 'Username',
-    'from'         => 'From',
-    'sms_alert'    => 'Alerta SMS',
-    'alert_position' => 'Posição de alerta',
-    'client_mobile'  => 'Client Mobile No.',
-    'invalid_input'  => 'Entrada inválida',
-    'sms_template'   => 'modelo de SMS',
-    'recall_sms_template' => 'Rechamada do modelo SMS',
-
     /*Message Extra*/
     'download'      => 'Download',
     'attachment'    => 'Attachment',

@@ -23,10 +23,6 @@ class Roles
     {
         $roles = array_slice(func_get_args(), 2); 
 
-        if (in_array('receptionist', $roles) && $request->url() == url('/queue/receptionist')) {
-            return $next($request);
-        }
-
         foreach ($roles as $role) 
         { 
             try 

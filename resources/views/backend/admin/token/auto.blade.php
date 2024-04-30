@@ -2,7 +2,7 @@
 @section('title', trans('app.auto_token'))
 
 @section('content')
-<script src="{{ asset('node_modules/push.js/bin/push.min.js') }}"></script>
+<!-- <script src="{{ asset('node_modules/push.js/bin/push.min.js') }}"></script> -->
 <div class="card ">
     <div class="card-header bg-danger text-white">
         <div class="row align-items-center">
@@ -40,47 +40,26 @@
 
     <div class="panel-body">
         <div class="col-sm-12" id="screen-content">
-            @if($display->sms_alert || $display->show_note)
-                <!-- With Mobile No -->
-                @foreach ($departmentList as $department) 
-                <div class="p-1 m-1 btn btn-primary capitalize text-center">
+            @if($display)
+                @foreach ($departmentList as $department )
+                    {{ Form::open(['url' => 'admin/token/auto', 'class' => 'AutoFrm p-1 m-1 btn btn-primary capitalize text-center']) }} 
+                    <input type="hidden" name="department_id" value="{{ $department->department_id }}">
+                    <input type="hidden" name="counter_id" value="{{ $department->counter_id }}">
+                    <input type="hidden" name="user_id" value="{{ $department->user_id }}">
                     <button 
-                        type="button" 
+                        type="submit" 
                         class="p-1 m-1 btn btn-primary capitalize text-center"
                         style="min-width: 15vw;white-space: pre-wrap;box-shadow:0px 0px 0px 2px#<?= substr(dechex(crc32($department->name)), 0, 6); ?>" 
-                        data-toggle="modal" 
-                        data-target="#tokenModal"
-                        data-department-id="{{ $department->department_id }}"
-                        data-counter-id="{{ $department->counter_id }}"
-                        data-user-id="{{ $department->user_id }}"
+                        data-token="{{ $department->token }}"
+                        data-queue="{{ $department->queue }}"
                         >
-                            <h5>{{ $department->name }}</h5>
-                            <h6>{{ $department->officer }}</h6>
-                    </button>  
-                </div>
-                @endforeach  
-                <!--Ends of With Mobile No -->
-            @else
-                <!-- Without Mobile No -->
-                @foreach ($departmentList as $department )
-{{ Form::open(['url' => 'admin/token/auto', 'class' => 'AutoFrm p-1 m-1 btn btn-primary capitalize text-center']) }} 
-<input type="hidden" name="department_id" value="{{ $department->department_id }}">
-<input type="hidden" name="counter_id" value="{{ $department->counter_id }}">
-<input type="hidden" name="user_id" value="{{ $department->user_id }}">
-<button 
-  type="submit" 
-  class="p-1 m-1 btn btn-primary capitalize text-center"
-  style="min-width: 15vw;white-space: pre-wrap;box-shadow:0px 0px 0px 2px#<?= substr(dechex(crc32($department->name)), 0, 6); ?>" 
-  data-token="{{ $department->token }}"
-  data-queue="{{ $department->queue }}"
->
-  <h5>{{ $department->name }}</h5>
-  <h6>{{ $department->officer }}</h6>
-</button> 
-{{ Form::close() }}
-@endforeach 
+                        <h5>{{ $department->name }}</h5>
+                        <h6>{{ $department->officer }}</h6>
+                    </button> 
+                    {{ Form::close() }}
+                    @endforeach 
 
-                <!--Ends of Without Mobile No -->
+                                    <!--Ends of Without Mobile No -->
             @endif
         </div>  
     </div> 
@@ -93,20 +72,6 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="infoModalLabel"><?= trans('app.note') ?></h4>
-      </div>
-      <div class="modal-body">
-        <p><strong class="label label-warning"> Note 1 </strong> &nbsp;
-            <strong>SMS Alert: {!! (!empty($display->sms_alert)?("<span class='label label-success'>Active</span>"):("<span class='label label-warning'>Deactive</span>")) !!} </strong><br>
-                        To active or deactive SMS Alert, please change the status of SMS Alert in Setting->Display Settings page
-        </p>
-        <p><strong class="label label-warning"> Note 2 </strong> &nbsp; To display a department on the auto token setting page, you need to set up it in Auto Token Setting page. 
-        </p>
-        <p><strong class="label label-warning"> Note 3 </strong> &nbsp; 
-            You can create a token by click on a key of the keyboard. 
-            Enable <span class='label label-success'>Keyboard Mode</span> from the display setting page. 
-            To create a token for a department, press on the key which you have denoted in the <strong>key for keyboard mode</strong> field in the add department page. 
-            The <strong>key for keyboard mode</strong> filed is also used to manage the token serial. 
-        </p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -124,9 +89,6 @@
         <h4 class="modal-title">{{ trans('app.user_information') }}</h4>
       </div>
       <div class="modal-body">
-        @if($display->sms_alert)
-        <p><input type="text" name="client_mobile" class="form-control" placeholder="{{ trans('app.client_mobile') }}" required><span class="text-danger">The Mobile No. field is required!</span></p>
-        @endif
 
         @if($display->show_note)
             <p>
@@ -337,13 +299,12 @@
             $.each(JSON.parse(keyList), function (id, obj) {
                 if (obj.key == key) {
                     // check form and ajax submit
-                    @if($display->sms_alert || $display->show_note)
+                    @if($display->show_note)
                         var modal = $('#tokenModal');
                         modal.modal('show');
                         modal.find('input[name=department_id]').val(obj.department_id);
                         modal.find('input[name=counter_id]').val(obj.counter_id);
                         modal.find('input[name=user_id]').val(obj.user_id);
-                        modal.find("input[name=client_mobile]").val("");
                         modal.find("textarea[name=note]").val("");
                         modal.find('.modal button[type=submit]').addClass('hidden');
                     @else

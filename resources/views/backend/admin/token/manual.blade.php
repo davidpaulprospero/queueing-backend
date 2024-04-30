@@ -21,14 +21,6 @@
 
         {{ Form::open(['url' => 'admin/token/create', 'class'=>'manualFrm mt-1  col-md-7 col-sm-8']) }}
 
-            @if($display->sms_alert)
-            <div class="form-group @error('client_mobile') has-error @enderror">
-                <label for="client_mobile">{{ trans('app.client_mobile') }} <i class="text-danger">*</i></label><br/>
-                <input type="text" name="client_mobile" class="form-control" placeholder="{{ trans('app.client_mobile') }}"/>  
-                <span class="text-danger">{{ $errors->first('client_mobile') }}</span>
-            </div>   
-            @endif
-
             <div class="form-group @error('department_id') has-error @enderror">
                 <label for="department_id">{{ trans('app.department') }} <i class="text-danger">*</i></label><br/>
                 {{ Form::select('department_id', $departments, null, ['placeholder' => 'Select Option', 'class'=>'select2 form-control']) }}<br/>
@@ -84,11 +76,7 @@
         <h4 class="modal-title" id="infoModalLabel"><?= trans('app.note') ?></h4>
       </div>
       <div class="modal-body">
-       <p><strong class="label label-warning"> Note 1 </strong> &nbsp;
-            <strong>SMS Alert {!! (!empty($display->sms_alert)?("<span class='label label-success'>Active</span>"):("<span class='label label-warning'>Deactive</span>")) !!} </strong>
-                        To active or deactive SMS Alert, please change the status of SMS Alert in Setting->Display Settings page
-        </p>
-        <p><strong class="label label-warning"> Note 2 </strong> &nbsp;
+        <p><strong class="label label-warning"> Note 1 </strong> &nbsp;
             <strong>Show Note {!! (!empty($display->show_note)?("<span class='label label-success'>Active</span>"):("<span class='label label-warning'>Deactive</span>")) !!} </strong>
             To display note, please change the status of Show Note in Setting->Display Settings page
         </p>

@@ -21,7 +21,6 @@ class User extends Authenticatable
     protected $avaliableRoles = [
         'Admin'   => '5',
         'Officer' => '1',
-        'Receptionist' => '2',
         'Client'  => '3',
     ];
 

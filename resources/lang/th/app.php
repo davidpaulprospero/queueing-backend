@@ -48,7 +48,6 @@ return [
     'mobile' => 'มือถือไม่',
     'user_type' => 'ประเภทผู้ใช้',
     'officer'     => 'เจ้าหน้าที่',
-    'receptionist' => 'พนักงานต้อนรับ',
     'admin'       => 'ผู้ดูแลระบบ',
     'client'      => 'ลูกค้า',
     'photo' => 'รูปภาพ',
@@ -147,27 +146,6 @@ return [
     'favicon'     => 'Favicon',
     'logo'        => 'โลโก้',
     'profile_setting' => 'การตั้งค่าโปรไฟล์',
-
-    /*SMS*/ 
-    'sms'         => 'SMS',
-    'new_sms'     => 'SMS ใหม่',
-    'sms_history' => 'ประวัติ SMS',
-    'sms_setting' => 'การตั้งค่า SMS',
-    'sms_sent'    => 'ส่ง SMS แล้ว!',
-    'provider'    => 'ผู้ให้บริการ',
-    'api_key'     => 'คีย์ API',
-    'username'    => 'ชื่อผู้ใช้',
-    'from'        => 'จาก',
-    'sms_alert'   => 'SMS เตือนภัย',
-    'alert_position' => 'ตำแหน่งการแจ้งเตือน',
-    'client_mobile'  => 'หมายเลขโทรศัพท์มือถือลูกค้า',
-    'alid_input '  =>' อินพุตไม่ถูกต้อง ',
-    'sms_template' => 'แม่แบบ SMS',
-    'recall_sms_template' => 'เรียกคืนเทมเพลต SMS',
-
-    /*SMS*/
-    'download'      => 'ดาวน์โหลด',
-    'attachment'    => 'เอกสารแนบ', 
 
     /*Report*/
     'start_date'    => "วันที่เริ่มต้น",

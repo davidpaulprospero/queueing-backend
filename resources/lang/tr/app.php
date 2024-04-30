@@ -47,7 +47,6 @@ return [
     'mobile'      => 'Telefon numarası',
     'user_type'   => 'Kullanıcı tipi',
     'officer'     => 'Subay',
-    'receptionist' => 'Resepsiyonist',
     'admin'       => 'Yönetim',
     'client'      => 'Müşteri',
     'photo'       => 'Fotoğraf',
@@ -145,23 +144,6 @@ return [
     'favicon'     => 'Favicon',
     'logo'        => 'Logo',
     'profile_setting' => 'Profil Ayarı',
-
-    /*SMS*/
-    'sms'         => 'SMS',
-    'new_sms'     => 'Yeni SMS',
-    'sms_history' => 'SMS Geçmişi',
-    'sms_setting' => 'SMS Ayarı',
-    'sms_sent'    => 'SMS Gönderildi!',
-    'provider'    => 'Sağlayıcı',
-    'api_key'     => 'API Anahtarı',
-    'username'    => 'Kullanıcı adı',
-    'from'        => 'From', 
-    'sms_alert'   => 'SMS Uyarısı',
-    'alert_position' => 'Uyarı Konumu',
-    'client_mobile'  => 'İstemci Mobile No.',
-    'invalid_input'  => 'Geçersiz Girdi',
-    'sms_template'   => 'SMS Şablonu',
-    'recall_sms_template' => 'SMS Şablonunu Geri Çağırma',
 
     // Message Extra
     'download'    => 'İndir',

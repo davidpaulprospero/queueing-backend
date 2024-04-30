@@ -60,18 +60,9 @@
         <!-- <div class="col-xs-6">
             @yield('info.language')
         </div> -->
-        <div class="col-xs-6">
+        <div class="col-xs-12">
           <button type="submit" class="btn btn-block btn-primary" style="background-color:#A3202B;">{{ trans('app.signin')}}</button>
         </div> 
-        <div class="col-xs-6">
-        <script>
-            function signInAsUser() {
-                document.getElementById("email").value = "recep";
-                document.getElementById("password").value = "pass";
-            }
-        </script>
-
-        <button type="submit" onclick="signInAsUser()" id="signin-button" class="btn btn-block btn-primary" style="background-color:#A3202B;">{{ trans('app.user_signin')}}</button>
 </div>
         {{ Form::close() }}   
         

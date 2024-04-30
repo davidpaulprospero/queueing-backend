@@ -28,7 +28,6 @@ class CreateTokenTable extends Migration
             $table->timestamps();
             $table->boolean('is_vip')->nullable();
             $table->boolean('status')->default(0)->comment('0-pending, 1-complete, 2-stop');
-            $table->boolean('sms_status')->default(0)->comment('0-pending, 1-sent, 2-quick-send');
         });
     }
 

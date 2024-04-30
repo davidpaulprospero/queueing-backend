@@ -40,7 +40,6 @@
                             <option value="">{{ trans('app.user_type') }}</option>
                             <option value="5">{{trans('app.admin')}}</option>
                             <option value="1">{{trans('app.officer')}}</option>
-                            <option value="2">{{trans('app.receptionist')}}</option>
                             <option value="3">{{trans('app.client')}}</option>
                         </select> 
                     </th> 

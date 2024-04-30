@@ -134,18 +134,6 @@
                 <span class="text-danger">{{ $errors->first('alert_position') }}</span>
             </div>
 
-            <div class="form-group @error('sms_alert') has-error @enderror">
-                <label for="sms_alert">{{ trans('app.sms_alert') }}</label>
-                <div id="sms_alert">  
-                    <label class="radio-inline">
-                        <input type="radio" name="sms_alert" value="1" {{ (($setting->sms_alert)=='1')?"checked":"" }}> {{ trans('app.active') }}
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="sms_alert" value="0" {{ (($setting->sms_alert)=='0')?"checked":"" }}> {{ trans('app.deactive') }}
-                    </label> 
-                </div>
-            </div> 
-
             <div class="form-group @error('show_officer') has-error @enderror">
                 <label for="show_officer">{{ trans('app.show_officer') }}</label>
                 <div id="show_officer">  

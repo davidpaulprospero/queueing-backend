@@ -6,7 +6,6 @@ use App\Events\NewCallRecord;
 use Illuminate\Support\Facades\Storage;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Common\SMS_lib;
 use App\Http\Controllers\Common\Token_lib;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -17,8 +16,6 @@ use App\Models\Token;
 use App\Models\DisplaySetting;
 use App\Models\TokenSetting;
 use App\Models\TransactionType;
-use App\Models\SmsSetting;
-use App\Models\SmsHistory;
 use DB, Validator;
 
 class TokenController extends Controller
@@ -175,7 +172,7 @@ class TokenController extends Controller
 
         $display = DisplaySetting::first();
 
-        if ($display->sms_alert) {
+        if ($display) {
             $validator = Validator::make($request->all(), [
                 'client_mobile' => 'required',
                 'department_id' => 'required|max:11',
@@ -338,7 +335,7 @@ class TokenController extends Controller
 
         $display = DisplaySetting::first();
 
-        if ($display->sms_alert) {
+        if ($display) {
             $validator = Validator::make($request->all(), [
                 'client_mobile' => 'required',
                 'department_id' => 'required|max:11',
@@ -438,6 +435,7 @@ class TokenController extends Controller
 
         $counters = Counter::where('status', 1)->pluck('name', 'id');
         $departments = Department::where('status', 1)->pluck('name', 'id');
+        $transactionTypes = TransactionType::pluck('name', 'id');
         $officers = User::select(DB::raw('CONCAT(firstname, " ", lastname) as name'), 'id')
             ->where('user_type', 1)
             ->where('status', 1)
@@ -698,9 +696,6 @@ class TokenController extends Controller
     public function recall($id = null)
     {
         @date_default_timezone_set(session('app.timezone'));
-
-        //send sms immediately
-        $setting  = SmsSetting::first();
         $token = DB::table('token AS t')
             ->select(
                 "t.token_no AS token",
@@ -716,40 +711,10 @@ class TokenController extends Controller
             ->where('t.id', $id)
             ->first();
 
-        if (!empty($token->mobile)) {
-            $response = (new SMS_lib)
-                ->provider("$setting->provider")
-                ->api_key("$setting->api_key")
-                ->username("$setting->username")
-                ->password("$setting->password")
-                ->from("$setting->from")
-                ->to($token->mobile)
-                ->message($setting->recall_sms_template, array(
-                    'TOKEN'  => $token->token,
-                    'MOBILE' => $token->mobile,
-                    'DEPARTMENT' => $token->department,
-                    'COUNTER' => $token->counter,
-                    'OFFICER' => $token->officer,
-                    'DATE'   => $token->date
-                ))
-                ->response();
-            $api = json_decode($response, true);
-
-            //store sms information 
-            $sms = new SmsHistory;
-            $sms->from        = $setting->from;
-            $sms->to          = $token->mobile;
-            $sms->message     = $api['message'];
-            $sms->response    = $response;
-            $sms->created_at  = date('Y-m-d H:i:s');
-            $sms->save();
-        }
-
         Token::where('id', $id)
             ->update([
                 'updated_at' => date('Y-m-d H:i:s'),
                 'status'     => 0,
-                'sms_status' => 2
             ]);
 
         //RECALL 
@@ -760,13 +725,13 @@ class TokenController extends Controller
     {
         @date_default_timezone_set(session('app.timezone'));
 
-        Token::where('id', $id)->update(['updated_at' => date('Y-m-d H:i:s'), 'status' => 1, 'sms_status' => 1]);
+        Token::where('id', $id)->update(['updated_at' => date('Y-m-d H:i:s'), 'status' => 1]);
         return redirect()->back()->with('message', trans('app.complete_successfully'));
     }
 
     public function stoped($id = null)
     {
-        Token::where('id', $id)->update(['updated_at' => null, 'status' => 2, 'sms_status' => 1]);
+        Token::where('id', $id)->update(['updated_at' => null, 'status' => 2]);
         return redirect()->back()->with('message', trans('app.update_successfully'));
     }
 
