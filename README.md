@@ -7,4 +7,4 @@
 - composer install
 - composer run post-autoload-dump
 - composer run post-root-package-install
-- composer post-create-project-cmd
+- composer run post-create-project-cmd
